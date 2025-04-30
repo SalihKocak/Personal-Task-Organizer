@@ -1,0 +1,110 @@
+@model ToDoListApp.Models.TodoItem
+
+@{
+    ViewData["Title"] = "Görev Sil";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h4 class="card-title mb-0 fw-bold text-danger">Görev Silme Onayı</h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="alert alert-warning mb-4">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-exclamation-triangle-fill fs-4 me-2"></i>
+                            <div>
+                                <strong>Uyarı:</strong> Bu görevi silmek üzeresiniz. Bu işlem geri alınamaz.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="fw-bold">Görev Bilgileri</h5>
+                        <div class="mb-3">
+                            <span class="text-muted">Başlık:</span>
+                            <p class="mb-1 fw-bold">@Model.Title</p>
+                        </div>
+                        
+                        @if (!string.IsNullOrEmpty(Model.Description))
+                        {
+                            <div class="mb-3">
+                                <span class="text-muted">Açıklama:</span>
+                                <p class="mb-1">@Model.Description</p>
+                            </div>
+                        }
+                        
+                        <div class="mb-3">
+                            <span class="text-muted">Durum:</span>
+                            <p class="mb-1">
+                                @switch (Model.Status)
+                                {
+                                    case TodoStatus.Pending:
+                                        <span class="badge bg-warning text-dark">Beklemede</span>
+                                        break;
+                                    case TodoStatus.InProgress:
+                                        <span class="badge bg-info text-dark">Devam Ediyor</span>
+                                        break;
+                                    case TodoStatus.Completed:
+                                        <span class="badge bg-success">Tamamlandı</span>
+                                        break;
+                                    case TodoStatus.Canceled:
+                                        <span class="badge bg-secondary">İptal Edildi</span>
+                                        break;
+                                }
+                            </p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <span class="text-muted">Öncelik:</span>
+                            <p class="mb-1">
+                                @switch (Model.Priority)
+                                {
+                                    case Priority.Low:
+                                        <span class="badge bg-light text-dark">Düşük</span>
+                                        break;
+                                    case Priority.Medium:
+                                        <span class="badge bg-info">Orta</span>
+                                        break;
+                                    case Priority.High:
+                                        <span class="badge bg-warning text-dark">Yüksek</span>
+                                        break;
+                                    case Priority.Critical:
+                                        <span class="badge bg-danger">Acil</span>
+                                        break;
+                                }
+                            </p>
+                        </div>
+                        
+                        @if (Model.DueDate.HasValue)
+                        {
+                            <div class="mb-3">
+                                <span class="text-muted">Son Tarih:</span>
+                                <p class="mb-1">@Model.DueDate.Value.ToString("dd/MM/yyyy")</p>
+                            </div>
+                        }
+                        
+                        <div>
+                            <span class="text-muted">Oluşturulma Tarihi:</span>
+                            <p class="mb-1">@Model.CreatedDate.ToString("dd/MM/yyyy HH:mm")</p>
+                        </div>
+                    </div>
+
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Geri Dön
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> Görevi Sil
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

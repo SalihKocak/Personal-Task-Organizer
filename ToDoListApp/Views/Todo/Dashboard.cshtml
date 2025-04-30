@@ -1,0 +1,197 @@
+@model ToDoListApp.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container py-4">
+    <h1 class="h2 fw-bold mb-4">Dashboard</h1>
+
+    <div class="row mb-4">
+        <div class="col-md-3 mb-4 mb-md-0">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">Toplam Görev</h5>
+                    <h2 class="display-4 fw-bold text-primary">@Model.TotalTasks</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4 mb-md-0">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">Bekleyen</h5>
+                    <h2 class="display-4 fw-bold text-warning">@Model.PendingTasks</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4 mb-md-0">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">Devam Eden</h5>
+                    <h2 class="display-4 fw-bold text-info">@Model.InProgressTasks</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">Tamamlanan</h5>
+                    <h2 class="display-4 fw-bold text-success">@Model.CompletedTasks</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-7 mb-4 mb-md-0">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0 fw-bold">Tamamlanma Oranı</h5>
+                    <span class="badge bg-success">@Model.CompletionRate.ToString("0.0") %</span>
+                </div>
+                <div class="card-body">
+                    <div class="progress mb-3" style="height: 25px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: @Model.CompletionRate%;" aria-valuenow="@Model.CompletionRate" aria-valuemin="0" aria-valuemax="100">
+                            @Model.CompletionRate.ToString("0.0") %
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between text-muted small">
+                        <span>Tamamlanan: @Model.CompletedTasks</span>
+                        <span>Toplam: @Model.TotalTasks</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white py-3">
+                    <h5 class="card-title mb-0 fw-bold">Öncelik Dağılımı</h5>
+                </div>
+                <div class="card-body pb-0">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Düşük</span>
+                            <span class="badge bg-light text-dark">@Model.TasksByPriority[Priority.Low]</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-light text-dark" role="progressbar" style="width: @(Model.TotalTasks > 0 ? (Model.TasksByPriority[Priority.Low] * 100 / Model.TotalTasks) : 0)%;" aria-valuenow="@Model.TasksByPriority[Priority.Low]" aria-valuemin="0" aria-valuemax="@Model.TotalTasks"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Orta</span>
+                            <span class="badge bg-info">@Model.TasksByPriority[Priority.Medium]</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: @(Model.TotalTasks > 0 ? (Model.TasksByPriority[Priority.Medium] * 100 / Model.TotalTasks) : 0)%;" aria-valuenow="@Model.TasksByPriority[Priority.Medium]" aria-valuemin="0" aria-valuemax="@Model.TotalTasks"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Yüksek</span>
+                            <span class="badge bg-warning text-dark">@Model.TasksByPriority[Priority.High]</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: @(Model.TotalTasks > 0 ? (Model.TasksByPriority[Priority.High] * 100 / Model.TotalTasks) : 0)%;" aria-valuenow="@Model.TasksByPriority[Priority.High]" aria-valuemin="0" aria-valuemax="@Model.TotalTasks"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Acil</span>
+                            <span class="badge bg-danger">@Model.TasksByPriority[Priority.Critical]</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-danger" role="progressbar" style="width: @(Model.TotalTasks > 0 ? (Model.TasksByPriority[Priority.Critical] * 100 / Model.TotalTasks) : 0)%;" aria-valuenow="@Model.TasksByPriority[Priority.Critical]" aria-valuemin="0" aria-valuemax="@Model.TotalTasks"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+            <h5 class="card-title mb-0 fw-bold">Son Eklenen Görevler</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.RecentTasks.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Başlık</th>
+                                <th>Durum</th>
+                                <th>Öncelik</th>
+                                <th>Oluşturulma Tarihi</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var task in Model.RecentTasks)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@task.Title</strong>
+                                        @if (!string.IsNullOrEmpty(task.Description))
+                                        {
+                                            <p class="text-muted mb-0 small">@(task.Description.Length > 50 ? task.Description.Substring(0, 50) + "..." : task.Description)</p>
+                                        }
+                                    </td>
+                                    <td>
+                                        @switch (task.Status)
+                                        {
+                                            case TodoStatus.Pending:
+                                                <span class="badge bg-warning text-dark">Beklemede</span>
+                                                break;
+                                            case TodoStatus.InProgress:
+                                                <span class="badge bg-info text-dark">Devam Ediyor</span>
+                                                break;
+                                            case TodoStatus.Completed:
+                                                <span class="badge bg-success">Tamamlandı</span>
+                                                break;
+                                            case TodoStatus.Canceled:
+                                                <span class="badge bg-secondary">İptal Edildi</span>
+                                                break;
+                                        }
+                                    </td>
+                                    <td>
+                                        @switch (task.Priority)
+                                        {
+                                            case Priority.Low:
+                                                <span class="badge bg-light text-dark">Düşük</span>
+                                                break;
+                                            case Priority.Medium:
+                                                <span class="badge bg-info">Orta</span>
+                                                break;
+                                            case Priority.High:
+                                                <span class="badge bg-warning text-dark">Yüksek</span>
+                                                break;
+                                            case Priority.Critical:
+                                                <span class="badge bg-danger">Acil</span>
+                                                break;
+                                        }
+                                    </td>
+                                    <td>@task.CreatedDate.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        <a asp-action="Edit" asp-route-id="@task.Id" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-clipboard fs-1 text-muted mb-3"></i>
+                    <h5>Henüz hiç görev eklemediniz</h5>
+                    <p class="mb-0">Görevlerinizi eklemeye başlamak için <a asp-action="Create" class="text-decoration-none">buraya tıklayın</a>.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div> 

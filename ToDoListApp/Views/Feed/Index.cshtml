@@ -1,0 +1,218 @@
+@model List<Post>
+
+@{
+    ViewData["Title"] = "Topluluk";
+}
+
+<div class="bg-gradient-primary text-white py-5 mb-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h1 class="display-4 fw-bold mb-3 slide-up">Topluluk Paylaşımları</h1>
+                <p class="lead slide-up" style="animation-delay: 0.1s">
+                    Diğer kullanıcılarla düşüncelerinizi paylaşın, sorular sorun ve deneyimlerinizi aktarın
+                </p>
+                <div class="slide-up" style="animation-delay: 0.2s">
+                    <a asp-action="Create" class="btn btn-light btn-lg mt-3">
+                        <i class="bi bi-plus-lg me-2"></i> Yeni Paylaşım Oluştur
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block">
+                <img src="https://cdni.iconscout.com/illustration/premium/thumb/online-community-4550024-3779391.png" 
+                     alt="Topluluk İllüstrasyonu" class="img-fluid slide-up" style="animation-delay: 0.3s">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container pb-5">
+    <div class="row">
+        <div class="col-lg-8">
+            @if (Model != null && Model.Any())
+            {
+                <div class="row">
+                    @foreach (var post in Model)
+                    {
+                        <div class="col-12 mb-4 fade-in" style="animation-delay: @(Model.IndexOf(post) * 0.1)s">
+                            <div class="card h-100">
+                                <div class="card-body p-4">
+                                    <div class="d-flex align-items-center mb-4">
+                                        <div class="flex-shrink-0">
+                                            @{
+                                                var user = await ViewBag.MongoDBService?.GetUserByIdAsync(post.UserId);
+                                                string profilePic = user?.ProfilePicture ?? $"https://ui-avatars.com/api/?name={post.UserId}&background=random&color=fff";
+                                            }
+                                            <img src="@profilePic" class="rounded-circle user-avatar" alt="@(user?.Username ?? "Kullanıcı")" 
+                                                 data-bs-toggle="tooltip" title="@(user?.Username ?? "Kullanıcı")">
+                                        </div>
+                                        <div class="ms-3">
+                                            <h6 class="mb-0 fw-bold">@(user?.Username ?? "Kullanıcı")</h6>
+                                            <span class="text-muted small">
+                                                <i class="bi bi-clock me-1"></i>
+                                                @post.CreatedDate.ToString("dd MMM yyyy, HH:mm")
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <h5 class="fw-bold mb-3">@post.Title</h5>
+                                    <p class="text-muted mb-4">
+                                        @(post.Content.Length > 250 ? post.Content.Substring(0, 250) + "..." : post.Content)
+                                    </p>
+                                    
+                                    @if (!string.IsNullOrEmpty(post.Tags))
+                                    {
+                                        <div class="mb-4">
+                                            @foreach (var tag in post.Tags.Split(','))
+                                            {
+                                                <span class="badge bg-primary-light text-primary me-1 px-3 py-2 rounded-pill">
+                                                    <i class="bi bi-hash"></i> @tag.Trim()
+                                                </span>
+                                            }
+                                        </div>
+                                    }
+                                
+                                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                                        <a asp-action="Details" asp-route-id="@post.Id" class="btn btn-outline-primary me-2 mb-2">
+                                            <i class="bi bi-chat-dots me-1"></i> 
+                                            Yorumlar (@(post.Comments?.Count ?? 0))
+                                        </a>
+                                        
+                                        <div class="d-flex gap-2">
+                                            @if (post.UserId == Context.Session.GetString("UserId"))
+                                            {
+                                                <a asp-action="Edit" asp-route-id="@post.Id" class="btn btn-outline-secondary mb-2">
+                                                    <i class="bi bi-pencil-square me-1"></i> Düzenle
+                                                </a>
+                                                <a asp-action="Delete" asp-route-id="@post.Id" class="btn btn-outline-danger mb-2">
+                                                    <i class="bi bi-trash me-1"></i> Sil
+                                                </a>
+                                            }
+                                            <a asp-action="Details" asp-route-id="@post.Id" class="btn btn-primary mb-2">
+                                                <i class="bi bi-arrow-right me-1"></i> Detaylar
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="card text-center py-5">
+                    <div class="card-body">
+                        <div class="icon-lg bg-primary-light text-primary mx-auto mb-4">
+                            <i class="bi bi-chat-square-text"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Henüz paylaşım bulunmuyor</h4>
+                        <p class="text-muted mb-4">İlk paylaşımı yaparak topluluğa katkıda bulunun</p>
+                        <a asp-action="Create" class="btn btn-primary">
+                            <i class="bi bi-plus-lg me-2"></i> Yeni Paylaşım Oluştur
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="col-lg-4">
+            <div class="position-sticky" style="top: 2rem;">
+                <div class="card mb-4 slide-up">
+                    <div class="card-header border-bottom">
+                        <h5 class="card-title fw-bold mb-0">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Topluluk Hakkında
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <p class="text-muted">
+                            Bu platformda diğer kullanıcılarla etkileşime geçebilir, sorular sorabilir, 
+                            deneyimlerinizi paylaşabilir ve başkalarının paylaşımlarını görebilirsiniz.
+                        </p>
+                        <a asp-action="Create" class="btn btn-primary w-100">
+                            <i class="bi bi-plus-lg me-2"></i> Yeni Paylaşım Oluştur
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card slide-up" style="animation-delay: 0.2s">
+                    <div class="card-header border-bottom">
+                        <h5 class="card-title fw-bold mb-0">
+                            <i class="bi bi-collection me-2"></i>
+                            Paylaşımlarım
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <p class="text-muted">Kendi paylaşımlarınızı görüntülemek ve yönetmek için:</p>
+                        <a asp-action="MyPosts" class="btn btn-outline-primary w-100">
+                            <i class="bi bi-collection me-2"></i> Paylaşımlarımı Göster
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="card mt-4 slide-up" style="animation-delay: 0.3s">
+                    <div class="card-header border-bottom">
+                        <h5 class="card-title fw-bold mb-0">
+                            <i class="bi bi-tag me-2"></i>
+                            Popüler Etiketler
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="badge bg-primary-light text-primary px-3 py-2 rounded-pill">
+                                <i class="bi bi-hash"></i> TaskHub
+                            </span>
+                            <span class="badge bg-primary-light text-primary px-3 py-2 rounded-pill">
+                                <i class="bi bi-hash"></i> Görevler
+                            </span>
+                            <span class="badge bg-primary-light text-primary px-3 py-2 rounded-pill">
+                                <i class="bi bi-hash"></i> Verimlilik
+                            </span>
+                            <span class="badge bg-primary-light text-primary px-3 py-2 rounded-pill">
+                                <i class="bi bi-hash"></i> Zaman
+                            </span>
+                            <span class="badge bg-primary-light text-primary px-3 py-2 rounded-pill">
+                                <i class="bi bi-hash"></i> Motivasyon
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        }
+        
+        .icon-lg {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            border-radius: 24px;
+            font-size: 2rem;
+        }
+        
+        .bg-primary-light {
+            background-color: rgba(99, 102, 241, 0.1);
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        // Tooltip'leri etkinleştir
+        document.addEventListener('DOMContentLoaded', function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
+} 

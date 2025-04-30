@@ -1,0 +1,672 @@
+@model ToDoListApp.ViewModels.TodoListViewModel
+
+@{
+    ViewData["Title"] = "Görevlerim";
+}
+
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <h1 class="display-5 fw-bold mb-3">Görevlerim</h1>
+                <p class="text-muted mb-4">Görevlerinizi takip edin, düzenleyin ve hedeflerinize daha kolay ulaşın.</p>
+            </div>
+            <div class="col-lg-6 d-flex justify-content-lg-end align-items-center">
+                <a asp-action="Create" class="btn btn-primary slide-up">
+                    <i class="bi bi-plus-lg me-2"></i> Yeni Görev Ekle
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-md-3 col-sm-6 mb-4 mb-md-0">
+            <div class="card card-stats slide-up" style="animation-delay: 0.1s">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="text-muted mb-1">Toplam Görev</h6>
+                            <h3 class="mb-0">@Model.TodoItems.Count</h3>
+                        </div>
+                        <div class="icon-bg bg-primary-light text-primary">
+                            <i class="bi bi-list-check"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-4 mb-md-0">
+            <div class="card card-stats slide-up" style="animation-delay: 0.2s">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="text-muted mb-1">Beklemede</h6>
+                            <h3 class="mb-0">@Model.PendingItems.Count</h3>
+                        </div>
+                        <div class="icon-bg bg-warning-light text-warning">
+                            <i class="bi bi-hourglass-split"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-4 mb-md-0">
+            <div class="card card-stats slide-up" style="animation-delay: 0.3s">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="text-muted mb-1">Devam Eden</h6>
+                            <h3 class="mb-0">@Model.InProgressItems.Count</h3>
+                        </div>
+                        <div class="icon-bg bg-info-light text-info">
+                            <i class="bi bi-gear"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="card card-stats slide-up" style="animation-delay: 0.4s">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="text-muted mb-1">Tamamlanan</h6>
+                            <h3 class="mb-0">@Model.CompletedItems.Count</h3>
+                        </div>
+                        <div class="icon-bg bg-success-light text-success">
+                            <i class="bi bi-check2-circle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-white py-3">
+            <ul class="nav nav-tabs card-header-tabs" id="todoTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab" aria-controls="all" aria-selected="true">
+                        <i class="bi bi-collection me-2"></i>
+                        Tümü <span class="badge bg-primary ms-1 rounded-pill">@Model.TodoItems.Count</span>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button" role="tab" aria-controls="pending" aria-selected="false">
+                        <i class="bi bi-hourglass-split me-2"></i>
+                        Beklemede <span class="badge bg-warning ms-1 rounded-pill">@Model.PendingItems.Count</span>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="in-progress-tab" data-bs-toggle="tab" data-bs-target="#in-progress" type="button" role="tab" aria-controls="in-progress" aria-selected="false">
+                        <i class="bi bi-gear me-2"></i>
+                        Devam Ediyor <span class="badge bg-info ms-1 rounded-pill">@Model.InProgressItems.Count</span>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="completed-tab" data-bs-toggle="tab" data-bs-target="#completed" type="button" role="tab" aria-controls="completed" aria-selected="false">
+                        <i class="bi bi-check2-circle me-2"></i>
+                        Tamamlandı <span class="badge bg-success ms-1 rounded-pill">@Model.CompletedItems.Count</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body p-0">
+            <div class="tab-content" id="todoTabsContent">
+                <!-- Tüm Görevler -->
+                <div class="tab-pane fade show active p-4" id="all" role="tabpanel" aria-labelledby="all-tab">
+                    @if (Model.TodoItems.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 120px">Durum</th>
+                                        <th>Başlık</th>
+                                        <th style="width: 120px">Öncelik</th>
+                                        <th style="width: 150px">Son Tarih</th>
+                                        <th style="width: 120px">İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.TodoItems)
+                                    {
+                                        <tr class="fade-in" style="animation-delay: @(Model.TodoItems.IndexOf(item) * 0.05)s">
+                                            <td>
+                                                @switch (item.Status)
+                                                {
+                                                    case TodoStatus.Pending:
+                                                        <span class="badge rounded-pill bg-warning-light text-warning px-3 py-2">
+                                                            <i class="bi bi-hourglass-split me-1"></i> Beklemede
+                                                        </span>
+                                                        break;
+                                                    case TodoStatus.InProgress:
+                                                        <span class="badge rounded-pill bg-info-light text-info px-3 py-2">
+                                                            <i class="bi bi-gear me-1"></i> Devam Ediyor
+                                                        </span>
+                                                        break;
+                                                    case TodoStatus.Completed:
+                                                        <span class="badge rounded-pill bg-success-light text-success px-3 py-2">
+                                                            <i class="bi bi-check2-circle me-1"></i> Tamamlandı
+                                                        </span>
+                                                        break;
+                                                    case TodoStatus.Canceled:
+                                                        <span class="badge rounded-pill bg-secondary-light text-secondary px-3 py-2">
+                                                            <i class="bi bi-x-circle me-1"></i> İptal Edildi
+                                                        </span>
+                                                        break;
+                                                }
+                                            </td>
+                                            <td>
+                                                <h6 class="mb-1">@item.Title</h6>
+                                                @if (!string.IsNullOrEmpty(item.Description))
+                                                {
+                                                    <p class="text-muted mb-0 small">@(item.Description.Length > 100 ? item.Description.Substring(0, 100) + "..." : item.Description)</p>
+                                                }
+                                            </td>
+                                            <td>
+                                                @switch (item.Priority)
+                                                {
+                                                    case Priority.Low:
+                                                        <span class="badge rounded-pill bg-light text-dark px-3 py-2">
+                                                            <i class="bi bi-arrow-down me-1"></i> Düşük
+                                                        </span>
+                                                        break;
+                                                    case Priority.Medium:
+                                                        <span class="badge rounded-pill bg-info-light text-info px-3 py-2">
+                                                            <i class="bi bi-dash me-1"></i> Orta
+                                                        </span>
+                                                        break;
+                                                    case Priority.High:
+                                                        <span class="badge rounded-pill bg-warning-light text-warning px-3 py-2">
+                                                            <i class="bi bi-arrow-up me-1"></i> Yüksek
+                                                        </span>
+                                                        break;
+                                                    case Priority.Critical:
+                                                        <span class="badge rounded-pill bg-danger-light text-danger px-3 py-2">
+                                                            <i class="bi bi-exclamation-circle me-1"></i> Acil
+                                                        </span>
+                                                        break;
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (item.DueDate.HasValue)
+                                                {
+                                                    var daysLeft = (item.DueDate.Value - DateTime.Today).Days;
+                                                    if (daysLeft < 0 && item.Status != TodoStatus.Completed)
+                                                    {
+                                                        <span class="badge bg-danger-light text-danger">
+                                                            <i class="bi bi-calendar-x me-1"></i> @item.DueDate.Value.ToString("dd/MM/yyyy")
+                                                        </span>
+                                                    }
+                                                    else if (daysLeft <= 3 && item.Status != TodoStatus.Completed)
+                                                    {
+                                                        <span class="badge bg-warning-light text-warning">
+                                                            <i class="bi bi-calendar-event me-1"></i> @item.DueDate.Value.ToString("dd/MM/yyyy")
+                                                        </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge bg-light text-dark">
+                                                            <i class="bi bi-calendar-event me-1"></i> @item.DueDate.Value.ToString("dd/MM/yyyy")
+                                                        </span>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Düzenle">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Sil">
+                                                        <i class="bi bi-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <div class="icon-lg bg-primary-light text-primary mx-auto mb-4">
+                                <i class="bi bi-clipboard-check"></i>
+                            </div>
+                            <h5 class="mb-2">Henüz hiç görev eklemediniz</h5>
+                            <p class="text-muted mb-4">İlk görevinizi eklemek için aşağıdaki butona tıklayın.</p>
+                            <a asp-action="Create" class="btn btn-primary">
+                                <i class="bi bi-plus-lg me-2"></i> Yeni Görev Ekle
+                            </a>
+                        </div>
+                    }
+                </div>
+
+                <!-- Bekleyen Görevler -->
+                <div class="tab-pane fade p-4" id="pending" role="tabpanel" aria-labelledby="pending-tab">
+                    @if (Model.PendingItems.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Başlık</th>
+                                        <th style="width: 120px">Öncelik</th>
+                                        <th style="width: 150px">Son Tarih</th>
+                                        <th style="width: 180px">İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.PendingItems)
+                                    {
+                                        <tr class="fade-in" style="animation-delay: @(Model.PendingItems.IndexOf(item) * 0.05)s">
+                                            <td>
+                                                <h6 class="mb-1">@item.Title</h6>
+                                                @if (!string.IsNullOrEmpty(item.Description))
+                                                {
+                                                    <p class="text-muted mb-0 small">@(item.Description.Length > 100 ? item.Description.Substring(0, 100) + "..." : item.Description)</p>
+                                                }
+                                            </td>
+                                            <td>
+                                                @switch (item.Priority)
+                                                {
+                                                    case Priority.Low:
+                                                        <span class="badge rounded-pill bg-light text-dark px-3 py-2">
+                                                            <i class="bi bi-arrow-down me-1"></i> Düşük
+                                                        </span>
+                                                        break;
+                                                    case Priority.Medium:
+                                                        <span class="badge rounded-pill bg-info-light text-info px-3 py-2">
+                                                            <i class="bi bi-dash me-1"></i> Orta
+                                                        </span>
+                                                        break;
+                                                    case Priority.High:
+                                                        <span class="badge rounded-pill bg-warning-light text-warning px-3 py-2">
+                                                            <i class="bi bi-arrow-up me-1"></i> Yüksek
+                                                        </span>
+                                                        break;
+                                                    case Priority.Critical:
+                                                        <span class="badge rounded-pill bg-danger-light text-danger px-3 py-2">
+                                                            <i class="bi bi-exclamation-circle me-1"></i> Acil
+                                                        </span>
+                                                        break;
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (item.DueDate.HasValue)
+                                                {
+                                                    var daysLeft = (item.DueDate.Value - DateTime.Today).Days;
+                                                    if (daysLeft < 0)
+                                                    {
+                                                        <span class="badge bg-danger-light text-danger">
+                                                            <i class="bi bi-calendar-x me-1"></i> @item.DueDate.Value.ToString("dd/MM/yyyy")
+                                                        </span>
+                                                    }
+                                                    else if (daysLeft <= 3)
+                                                    {
+                                                        <span class="badge bg-warning-light text-warning">
+                                                            <i class="bi bi-calendar-event me-1"></i> @item.DueDate.Value.ToString("dd/MM/yyyy")
+                                                        </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge bg-light text-dark">
+                                                            <i class="bi bi-calendar-event me-1"></i> @item.DueDate.Value.ToString("dd/MM/yyyy")
+                                                        </span>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Düzenle">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                    <button type="button" class="btn btn-sm btn-outline-info change-status" data-id="@item.Id" data-status="1" data-bs-toggle="tooltip" title="Başlat">
+                                                        <i class="bi bi-play-fill"></i> Başlat
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <div class="icon-lg bg-warning-light text-warning mx-auto mb-4">
+                                <i class="bi bi-clipboard-check"></i>
+                            </div>
+                            <h5 class="mb-2">Bekleyen göreviniz bulunmuyor</h5>
+                            <p class="text-muted mb-0">Şu anda beklemede olan hiçbir göreviniz bulunmuyor.</p>
+                        </div>
+                    }
+                </div>
+
+                <!-- Devam Eden Görevler -->
+                <div class="tab-pane fade p-4" id="in-progress" role="tabpanel" aria-labelledby="in-progress-tab">
+                    @if (Model.InProgressItems.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Başlık</th>
+                                        <th style="width: 120px">Öncelik</th>
+                                        <th style="width: 150px">Son Tarih</th>
+                                        <th style="width: 180px">İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.InProgressItems)
+                                    {
+                                        <tr class="fade-in" style="animation-delay: @(Model.InProgressItems.IndexOf(item) * 0.05)s">
+                                            <td>
+                                                <h6 class="mb-1">@item.Title</h6>
+                                                @if (!string.IsNullOrEmpty(item.Description))
+                                                {
+                                                    <p class="text-muted mb-0 small">@(item.Description.Length > 100 ? item.Description.Substring(0, 100) + "..." : item.Description)</p>
+                                                }
+                                            </td>
+                                            <td>
+                                                @switch (item.Priority)
+                                                {
+                                                    case Priority.Low:
+                                                        <span class="badge rounded-pill bg-light text-dark px-3 py-2">
+                                                            <i class="bi bi-arrow-down me-1"></i> Düşük
+                                                        </span>
+                                                        break;
+                                                    case Priority.Medium:
+                                                        <span class="badge rounded-pill bg-info-light text-info px-3 py-2">
+                                                            <i class="bi bi-dash me-1"></i> Orta
+                                                        </span>
+                                                        break;
+                                                    case Priority.High:
+                                                        <span class="badge rounded-pill bg-warning-light text-warning px-3 py-2">
+                                                            <i class="bi bi-arrow-up me-1"></i> Yüksek
+                                                        </span>
+                                                        break;
+                                                    case Priority.Critical:
+                                                        <span class="badge rounded-pill bg-danger-light text-danger px-3 py-2">
+                                                            <i class="bi bi-exclamation-circle me-1"></i> Acil
+                                                        </span>
+                                                        break;
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (item.DueDate.HasValue)
+                                                {
+                                                    var daysLeft = (item.DueDate.Value - DateTime.Today).Days;
+                                                    if (daysLeft < 0)
+                                                    {
+                                                        <span class="badge bg-danger-light text-danger">
+                                                            <i class="bi bi-calendar-x me-1"></i> @item.DueDate.Value.ToString("dd/MM/yyyy")
+                                                        </span>
+                                                    }
+                                                    else if (daysLeft <= 3)
+                                                    {
+                                                        <span class="badge bg-warning-light text-warning">
+                                                            <i class="bi bi-calendar-event me-1"></i> @item.DueDate.Value.ToString("dd/MM/yyyy")
+                                                        </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge bg-light text-dark">
+                                                            <i class="bi bi-calendar-event me-1"></i> @item.DueDate.Value.ToString("dd/MM/yyyy")
+                                                        </span>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Düzenle">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                    <button type="button" class="btn btn-sm btn-outline-success change-status" data-id="@item.Id" data-status="2" data-bs-toggle="tooltip" title="Tamamla">
+                                                        <i class="bi bi-check-lg"></i> Tamamla
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <div class="icon-lg bg-info-light text-info mx-auto mb-4">
+                                <i class="bi bi-clipboard-check"></i>
+                            </div>
+                            <h5 class="mb-2">Devam eden göreviniz bulunmuyor</h5>
+                            <p class="text-muted mb-0">Şu anda üzerinde çalıştığınız herhangi bir görev bulunmuyor.</p>
+                        </div>
+                    }
+                </div>
+
+                <!-- Tamamlanan Görevler -->
+                <div class="tab-pane fade p-4" id="completed" role="tabpanel" aria-labelledby="completed-tab">
+                    @if (Model.CompletedItems.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Başlık</th>
+                                        <th style="width: 120px">Öncelik</th>
+                                        <th style="width: 150px">Tamamlanma Tarihi</th>
+                                        <th style="width: 120px">İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.CompletedItems)
+                                    {
+                                        <tr class="fade-in" style="animation-delay: @(Model.CompletedItems.IndexOf(item) * 0.05)s">
+                                            <td>
+                                                <h6 class="mb-1">@item.Title</h6>
+                                                @if (!string.IsNullOrEmpty(item.Description))
+                                                {
+                                                    <p class="text-muted mb-0 small">@(item.Description.Length > 100 ? item.Description.Substring(0, 100) + "..." : item.Description)</p>
+                                                }
+                                            </td>
+                                            <td>
+                                                @switch (item.Priority)
+                                                {
+                                                    case Priority.Low:
+                                                        <span class="badge rounded-pill bg-light text-dark px-3 py-2">
+                                                            <i class="bi bi-arrow-down me-1"></i> Düşük
+                                                        </span>
+                                                        break;
+                                                    case Priority.Medium:
+                                                        <span class="badge rounded-pill bg-info-light text-info px-3 py-2">
+                                                            <i class="bi bi-dash me-1"></i> Orta
+                                                        </span>
+                                                        break;
+                                                    case Priority.High:
+                                                        <span class="badge rounded-pill bg-warning-light text-warning px-3 py-2">
+                                                            <i class="bi bi-arrow-up me-1"></i> Yüksek
+                                                        </span>
+                                                        break;
+                                                    case Priority.Critical:
+                                                        <span class="badge rounded-pill bg-danger-light text-danger px-3 py-2">
+                                                            <i class="bi bi-exclamation-circle me-1"></i> Acil
+                                                        </span>
+                                                        break;
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (item.CompletedDate.HasValue)
+                                                {
+                                                    <span class="badge bg-success-light text-success">
+                                                        <i class="bi bi-calendar-check me-1"></i> @item.CompletedDate.Value.ToString("dd/MM/yyyy")
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Sil">
+                                                        <i class="bi bi-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <div class="icon-lg bg-success-light text-success mx-auto mb-4">
+                                <i class="bi bi-clipboard-check"></i>
+                            </div>
+                            <h5 class="mb-2">Tamamlanan göreviniz bulunmuyor</h5>
+                            <p class="text-muted mb-0">Tebrikler! Görevlerinizi tamamladığınızda burada görünecekler.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .bg-primary-light {
+            background-color: rgba(99, 102, 241, 0.1);
+        }
+        
+        .bg-success-light {
+            background-color: rgba(16, 185, 129, 0.1);
+        }
+        
+        .bg-warning-light {
+            background-color: rgba(245, 158, 11, 0.1);
+        }
+        
+        .bg-danger-light {
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+        
+        .bg-info-light {
+            background-color: rgba(14, 165, 233, 0.1);
+        }
+        
+        .bg-secondary-light {
+            background-color: rgba(107, 114, 128, 0.1);
+        }
+        
+        .card-stats {
+            border-radius: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .card-stats:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .icon-bg {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            font-size: 1.5rem;
+        }
+        
+        .icon-lg {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            border-radius: 24px;
+            font-size: 2rem;
+        }
+        
+        .nav-tabs .nav-link {
+            color: var(--text-light);
+            font-weight: 500;
+            padding: 0.75rem 1.25rem;
+            border: none;
+            border-bottom: 2px solid transparent;
+            border-radius: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-tabs .nav-link:hover {
+            color: var(--primary-color);
+            border-color: transparent;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: var(--primary-color);
+            background-color: transparent;
+            border-bottom: 2px solid var(--primary-color);
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Durum değiştirme işlemi
+            document.querySelectorAll('.change-status').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    var id = this.getAttribute('data-id');
+                    var status = this.getAttribute('data-status');
+                    
+                    fetch('/Todo/ChangeStatus', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                        },
+                        body: 'id=' + id + '&status=' + status
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            alert(data.message || 'Bir hata oluştu.');
+                        }
+                    });
+                });
+            });
+            
+            // Tooltip'leri etkinleştir
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
+} 

@@ -1,0 +1,117 @@
+@{
+    ViewData["Title"] = "Hakkında";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Hero Section -->
+            <div class="text-center mb-5 fade-in">
+                <h1 class="display-4 fw-bold mb-4">Productivity Hub</h1>
+                <p class="lead text-muted mb-5">Görevlerinizi yönetin, paylaşın ve üretkenliğinizi artırın</p>
+                <hr class="my-5">
+            </div>
+
+            <!-- Main Content -->
+            <div class="mb-5 fade-in" style="animation-delay: 0.1s">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h2 class="fw-bold mb-4">Uygulama Hakkında</h2>
+                        <p class="mb-4">Productivity Hub, kişisel ve profesyonel görevlerinizi kolayca yönetmenizi, düzenlemenizi ve takip etmenizi sağlayan kapsamlı bir görev yönetim ve topluluk platformudur.</p>
+                        <p>Uygulamamız, günlük hayatınızı düzenlemenize, önceliklerinizi belirlemenize ve verimli çalışmanıza yardımcı olmak için tasarlanmıştır. Ayrıca, paylaşımlar ve yorumlar sayesinde diğer kullanıcılarla etkileşime geçebilir ve verimlilik ipuçlarını paylaşabilirsiniz.</p>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="rounded p-4 bg-light h-100 d-flex align-items-center">
+                            <div>
+                                <h3 class="fw-bold mb-3">Misyonumuz</h3>
+                                <p class="mb-0">Kullanıcılarımızın hayatlarını düzenlemelerine ve daha üretken olmalarına yardımcı olmak için sezgisel, kullanıcı dostu ve güçlü bir platform sunmak. Ayrıca, görev yönetimi ve üretkenlik konusunda bir topluluk oluşturmayı hedefliyoruz.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Section -->
+            <h2 class="fw-bold mb-4 text-center fade-in" style="animation-delay: 0.2s">Özellikler</h2>
+            <div class="row g-4 mb-5">
+                <!-- Feature 1 -->
+                <div class="col-md-6 col-lg-4 fade-in" style="animation-delay: 0.3s">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body p-4 text-center">
+                            <div class="icon-box mb-3">
+                                <i class="bi bi-list-check text-primary" style="font-size: 2.5rem;"></i>
+                            </div>
+                            <h4 class="fw-bold mb-3">Görev Yönetimi</h4>
+                            <p class="card-text">Görevlerinizi oluşturun, düzenleyin ve farklı statülere göre takip edin. Öncelik seviyelerini ayarlayın ve son tarihleri belirleyin.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="col-md-6 col-lg-4 fade-in" style="animation-delay: 0.4s">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body p-4 text-center">
+                            <div class="icon-box mb-3">
+                                <i class="bi bi-collection text-primary" style="font-size: 2.5rem;"></i>
+                            </div>
+                            <h4 class="fw-bold mb-3">Topluluk Paylaşımları</h4>
+                            <p class="card-text">Deneyimlerinizi, başarılarınızı ve üretkenlik ipuçlarınızı toplulukla paylaşın. Diğer kullanıcıların paylaşımlarına yorum yapın.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="col-md-6 col-lg-4 fade-in" style="animation-delay: 0.5s">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body p-4 text-center">
+                            <div class="icon-box mb-3">
+                                <i class="bi bi-people text-primary" style="font-size: 2.5rem;"></i>
+                            </div>
+                            <h4 class="fw-bold mb-3">Kullanıcı Profilleri</h4>
+                            <p class="card-text">Kişisel profilinizi oluşturun, profil fotoğrafınızı ekleyin ve paylaşımlarınızı yönetin. Diğer kullanıcılarla etkileşime geçin.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="text-center py-4 rounded bg-light fade-in" style="animation-delay: 0.6s">
+                <h3 class="fw-bold mb-3">Hemen Başlayın</h3>
+                <p class="mb-4">Görevlerinizi düzenlemeye ve toplulukla etkileşime geçmeye hazır mısınız?</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a asp-controller="Todo" asp-action="Index" class="btn btn-primary btn-lg">
+                        <i class="bi bi-list-check me-2"></i> Görevlerim
+                    </a>
+                    <a asp-controller="Feed" asp-action="Index" class="btn btn-outline-primary btn-lg">
+                        <i class="bi bi-collection me-2"></i> Paylaşımlar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+<style>
+    .fade-in {
+        animation: fadeIn 0.8s ease-in-out forwards;
+        opacity: 0;
+    }
+    
+    @@keyframes fadeIn {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    .icon-box {
+        margin: 0 auto;
+        width: 80px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background-color: rgba(13, 110, 253, 0.1);
+    }
+</style>
+} 

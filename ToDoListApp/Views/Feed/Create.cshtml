@@ -1,0 +1,50 @@
+@model ToDoListApp.Models.Post
+
+@{
+    ViewData["Title"] = "Yeni Paylaşım";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h2>@ViewData["Title"]</h2>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        
+                        <div class="form-group mb-3">
+                            <label asp-for="Title" class="control-label">Başlık</label>
+                            <input asp-for="Title" class="form-control" placeholder="Paylaşımınız için başlık girin" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Content" class="control-label">İçerik</label>
+                            <textarea asp-for="Content" class="form-control" rows="6" placeholder="Paylaşmak istediğiniz içeriği buraya yazın..."></textarea>
+                            <span asp-validation-for="Content" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label asp-for="Tags" class="control-label">Etiketler</label>
+                            <input asp-for="Tags" class="form-control" placeholder="Virgülle ayırarak etiketler ekleyin (örn: yardım, soru, genel)" />
+                            <small class="form-text text-muted">Etiketleri virgülle ayırarak yazın. Örn: teknoloji, yazılım, öneri</small>
+                            <span asp-validation-for="Tags" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-secondary">İptal</a>
+                            <button type="submit" class="btn btn-primary">Paylaş</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 

@@ -1,0 +1,202 @@
+/* Ana Sayfa için Özel Stiller */
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 3rem;
+}
+
+.hero-content {
+    padding: 4rem 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+.hero-bg {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 40%;
+    background-image: url('/images/hero-pattern.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    opacity: 0.2;
+    z-index: 1;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    margin-bottom: 2rem;
+    max-width: 650px;
+}
+
+.feature-card {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.07);
+    transition: all 0.3s ease;
+    height: 100%;
+    overflow: hidden;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+.feature-icon {
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.feature-icon-primary {
+    background-color: rgba(79, 70, 229, 0.1);
+    color: #4f46e5;
+}
+
+.feature-icon-success {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.feature-icon-warning {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.testimonial-section {
+    background-color: #f8fafc;
+    border-radius: 12px;
+    padding: 4rem 0;
+    margin-top: 3rem;
+}
+
+.testimonial-card {
+    padding: 2rem;
+    border-radius: 12px;
+    background-color: #fff;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+
+.testimonial-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 1rem;
+}
+
+.call-to-action {
+    background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+    border-radius: 12px;
+    padding: 3rem 2rem;
+    color: #fff;
+    margin-top: 3rem;
+    text-align: center;
+}
+
+.animated-icon {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.navbar .dropdown-menu {
+    border: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border-radius: 12px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    object-fit: cover;
+}
+
+/* Profil fotoğrafı alanı için stiller */
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #fff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    margin: 0 auto 2rem;
+    display: block;
+}
+
+/* Animasyonlar */
+.fade-in {
+    animation: fadeIn 1s ease-in-out;
+}
+
+.slide-up {
+    animation: slideUp 0.8s ease-in-out;
+}
+
+.slide-right {
+    animation: slideRight 0.8s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideRight {
+    from { transform: translateX(-50px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* Mobil uyumluluk */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.25rem;
+    }
+    
+    .hero-content {
+        padding: 3rem 1.5rem;
+    }
+    
+    .hero-bg {
+        width: 100%;
+        opacity: 0.1;
+    }
+} 

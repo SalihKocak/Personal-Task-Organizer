@@ -1,0 +1,270 @@
+@model ToDoListApp.ViewModels.PostDetailViewModel
+
+@{
+    ViewData["Title"] = Model.Post.Title;
+}
+
+<div class="container py-4">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Feed" asp-action="Index">Paylaşımlar</a></li>
+            <li class="breadcrumb-item active">@Model.Post.Title</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-lg-8 mb-4 mb-lg-0">
+            <!-- Post Card -->
+            <div class="card shadow-sm border-0 mb-4 fade-in">
+                <div class="card-body p-4">
+                    <h1 class="fw-bold mb-3">@Model.Post.Title</h1>
+                    
+                    <div class="d-flex align-items-center mb-4">
+                        @{
+                            var userId = Model.Post.UserId;
+                            var profilePicUrl = "/images/default-avatar.png"; // Varsayılan resim
+                            
+                            try {
+                                var user = await ViewBag.MongoDBService.GetUserByIdAsync(userId);
+                                if (user != null && !string.IsNullOrEmpty(user.ProfilePicture)) {
+                                    profilePicUrl = user.ProfilePicture;
+                                } else if (user != null) {
+                                    profilePicUrl = $"https://ui-avatars.com/api/?name={user.Username}&background=random&color=fff";
+                                }
+                                
+                                <img src="@profilePicUrl" alt="User Avatar" class="rounded-circle me-2" style="width: 42px; height: 42px; object-fit: cover;">
+                                <div>
+                                    <div class="fw-bold">@(user?.Username ?? "Kullanıcı")</div>
+                                    <div class="text-muted small">
+                                        <i class="bi bi-clock me-1"></i> @Model.Post.CreatedDate.ToString("dd MMMM yyyy, HH:mm")
+                                    </div>
+                                </div>
+                            }
+                            catch {
+                                <img src="@profilePicUrl" alt="User Avatar" class="rounded-circle me-2" style="width: 42px; height: 42px; object-fit: cover;">
+                                <div>
+                                    <div class="fw-bold">Kullanıcı</div>
+                                    <div class="text-muted small">
+                                        <i class="bi bi-clock me-1"></i> @Model.Post.CreatedDate.ToString("dd MMMM yyyy, HH:mm")
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                    
+                    <div class="post-content mb-4">
+                        @Html.Raw(Model.Post.Content.Replace("\n", "<br>"))
+                    </div>
+                    
+                    @if (!string.IsNullOrEmpty(Model.Post.Tags))
+                    {
+                        <div class="mb-3">
+                            @foreach (var tag in Model.Post.Tags.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                            {
+                                <span class="badge bg-light text-dark me-1 px-3 py-2 rounded-pill">
+                                    <i class="bi bi-tag me-1"></i>@tag.Trim()
+                                </span>
+                            }
+                        </div>
+                    }
+                    
+                    @if (Context.Session.GetString("UserId") == Model.Post.UserId)
+                    {
+                        <div class="mt-4 d-flex gap-2">
+                            <a asp-action="Edit" asp-route-id="@Model.Post.Id" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-pencil me-1"></i> Düzenle
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@Model.Post.Id" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash me-1"></i> Sil
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+            
+            <!-- Comments Section -->
+            <div class="card shadow-sm border-0 fade-in" style="animation-delay: 0.1s">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-4"><i class="bi bi-chat-left-text me-2"></i>Yorumlar (@Model.Comments.Count)</h4>
+                    
+                    <form id="comment-form" asp-action="AddComment" method="post" class="mb-4">
+                        <input type="hidden" asp-for="NewComment.PostId" value="@Model.Post.Id" />
+                        <div class="form-group mb-3">
+                            <textarea asp-for="NewComment.Content" class="form-control" 
+                                      placeholder="Yorumunuzu buraya yazın..." rows="3" required></textarea>
+                            <span asp-validation-for="NewComment.Content" class="text-danger"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send me-1"></i> Yorum Gönder
+                        </button>
+                    </form>
+                    
+                    <div id="comments-container">
+                        @if (Model.Comments.Any())
+                        {
+                            foreach (var comment in Model.Comments)
+                            {
+                                <div class="comment-item mb-4 fade-in" style="animation-delay: 0.2s">
+                                    <div class="d-flex">
+                                        @{
+                                            var commentUserId = comment.UserId;
+                                            var commentProfilePicUrl = "/images/default-avatar.png"; // Varsayılan resim
+                                            
+                                            try {
+                                                var commentUser = await ViewBag.MongoDBService.GetUserByIdAsync(commentUserId);
+                                                if (commentUser != null && !string.IsNullOrEmpty(commentUser.ProfilePicture)) {
+                                                    commentProfilePicUrl = commentUser.ProfilePicture;
+                                                } else if (commentUser != null) {
+                                                    commentProfilePicUrl = $"https://ui-avatars.com/api/?name={commentUser.Username}&background=random&color=fff";
+                                                }
+                                                
+                                                <img src="@commentProfilePicUrl" alt="Comment User Avatar" 
+                                                     class="rounded-circle me-2" style="width: 36px; height: 36px; object-fit: cover;">
+                                                <div class="flex-grow-1">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div class="fw-bold">@(commentUser?.Username ?? "Kullanıcı")</div>
+                                                        <small class="text-muted">@comment.CreatedDate.ToString("dd MMM yyyy, HH:mm")</small>
+                                                    </div>
+                                                    <div class="mt-2">@comment.Content</div>
+                                                    
+                                                    @if (Context.Session.GetString("UserId") == comment.UserId)
+                                                    {
+                                                        <div class="mt-2">
+                                                            <button class="btn btn-sm btn-outline-danger delete-comment" 
+                                                                    data-comment-id="@comment.Id" 
+                                                                    data-post-id="@Model.Post.Id">
+                                                                <i class="bi bi-trash me-1"></i> Sil
+                                                            </button>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            }
+                                            catch {
+                                                <img src="@commentProfilePicUrl" alt="Comment User Avatar" 
+                                                     class="rounded-circle me-2" style="width: 36px; height: 36px; object-fit: cover;">
+                                                <div class="flex-grow-1">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div class="fw-bold">Kullanıcı</div>
+                                                        <small class="text-muted">@comment.CreatedDate.ToString("dd MMM yyyy, HH:mm")</small>
+                                                    </div>
+                                                    <div class="mt-2">@comment.Content</div>
+                                                    
+                                                    @if (Context.Session.GetString("UserId") == comment.UserId)
+                                                    {
+                                                        <div class="mt-2">
+                                                            <button class="btn btn-sm btn-outline-danger delete-comment" 
+                                                                    data-comment-id="@comment.Id" 
+                                                                    data-post-id="@Model.Post.Id">
+                                                                <i class="bi bi-trash me-1"></i> Sil
+                                                            </button>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="text-center py-4">
+                                <div class="mb-3">
+                                    <i class="bi bi-chat-left text-muted" style="font-size: 3rem;"></i>
+                                </div>
+                                <p class="text-muted">Henüz yorum yok. İlk yorumu siz yapın!</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 sticky-top fade-in" style="top: 80px; animation-delay: 0.3s">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4">Keşfetmeye Devam Et</h5>
+                    <a asp-controller="Feed" asp-action="Index" class="btn btn-outline-primary w-100 mb-3">
+                        <i class="bi bi-collection me-2"></i> Tüm Paylaşımlar
+                    </a>
+                    <a asp-controller="Feed" asp-action="MyPosts" class="btn btn-outline-primary w-100 mb-3">
+                        <i class="bi bi-person-badge me-2"></i> Paylaşımlarım
+                    </a>
+                    <a asp-controller="Feed" asp-action="Create" class="btn btn-primary w-100">
+                        <i class="bi bi-plus-circle me-2"></i> Yeni Paylaşım Oluştur
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Yorumları AJAX ile gönderme
+            $("#comment-form").submit(function (e) {
+                e.preventDefault();
+                
+                $.ajax({
+                    url: '@Url.Action("AddComment", "Feed")',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (result) {
+                        // Sayfayı yenile
+                        location.reload();
+                    },
+                    error: function (error) {
+                        alert('Yorum gönderilirken bir hata oluştu.');
+                    }
+                });
+            });
+            
+            // Yorum silme işlemi
+            $(".delete-comment").click(function () {
+                if (confirm('Bu yorumu silmek istediğinize emin misiniz?')) {
+                    var commentId = $(this).data('comment-id');
+                    var postId = $(this).data('post-id');
+                    
+                    $.ajax({
+                        url: '/Feed/DeleteComment',
+                        type: 'POST',
+                        data: { commentId: commentId, postId: postId },
+                        success: function (result) {
+                            // Sayfayı yenile
+                            location.reload();
+                        },
+                        error: function (error) {
+                            alert('Yorum silinirken bir hata oluştu.');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}
+
+@section Styles {
+    <style>
+        .post-content {
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-in-out forwards;
+            opacity: 0;
+        }
+        
+        @@keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        .comment-item {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+    </style>
+} 

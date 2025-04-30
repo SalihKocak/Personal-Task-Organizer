@@ -1,0 +1,99 @@
+﻿@{
+    ViewData["Title"] = "To-Do List Uygulaması";
+}
+
+<div class="container py-5">
+    <!-- Hero Section -->
+    <div class="hero-section mb-5">
+        <div class="hero-bg"></div>
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <div class="hero-content fade-in">
+                    <h1 class="hero-title">Görevlerinizi Yönetin, Hayatınızı Düzenleyin</h1>
+                    <p class="hero-subtitle">Modern To-Do List uygulamamız ile görevlerinizi organize edin, zamanınızı verimli kullanın ve asla bir işi unutmayın.</p>
+                    <div class="d-flex flex-wrap gap-3 mt-4">
+                        <a asp-controller="Account" asp-action="Register" class="btn btn-light btn-lg">
+                            <i class="bi bi-person-plus me-2"></i> Hemen Kaydol
+                        </a>
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-outline-light btn-lg">
+                            <i class="bi bi-box-arrow-in-right me-2"></i> Giriş Yap
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 d-none d-lg-block text-center">
+                <img src="~/images/task-illustration.svg" alt="To-Do List" class="img-fluid mt-4 slide-up" style="max-width: 90%" />
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="row mt-5 pt-4">
+        <div class="col-12 text-center mb-5">
+            <h2 class="fw-bold">Neden Bizi Tercih Etmelisiniz?</h2>
+            <p class="lead text-muted">Modern özellikleri ile hayatınızı kolaylaştıran To-Do List uygulaması</p>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="feature-card p-4 slide-up" style="animation-delay: 0.1s">
+                <div class="feature-icon feature-icon-primary">
+                    <i class="bi bi-list-check"></i>
+                </div>
+                <h4 class="text-center">Görev Yönetimi</h4>
+                <p class="text-muted text-center">Görevlerinizi oluşturun, düzenleyin ve tamamlayın. Öncelik belirleyerek zamanınızı etkin kullanın.</p>
+                <ul class="mt-3 text-muted">
+                    <li>Öncelik seviyesi belirleme</li>
+                    <li>Son tarihe göre organizasyon</li>
+                    <li>Durum takibi ve güncelleme</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="feature-card p-4 slide-up" style="animation-delay: 0.2s">
+                <div class="feature-icon feature-icon-success">
+                    <i class="bi bi-bar-chart-line"></i>
+                </div>
+                <h4 class="text-center">Analizler ve Raporlar</h4>
+                <p class="text-muted text-center">Dashboard ile ilerlemenizi takip edin, tamamlanan ve bekleyen görevlerinizi analiz edin.</p>
+                <ul class="mt-3 text-muted">
+                    <li>Grafik ve istatistikler</li>
+                    <li>Tamamlanma oranları</li>
+                    <li>Üretkenlik raporları</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="feature-card p-4 slide-up" style="animation-delay: 0.3s">
+                <div class="feature-icon feature-icon-warning">
+                    <i class="bi bi-chat-dots"></i>
+                </div>
+                <h4 class="text-center">Sosyal Etkileşim</h4>
+                <p class="text-muted text-center">Diğer kullanıcılar ile etkileşime geçin, sorular sorun, deneyimlerinizi paylaşın.</p>
+                <ul class="mt-3 text-muted">
+                    <li>Görev paylaşımları</li>
+                    <li>Yorumlar ve geri bildirimler</li>
+                    <li>Topluluk deneyimi</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="call-to-action mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h2 class="mb-3 fw-bold">Ücretsiz Hesabınızı Hemen Oluşturun!</h2>
+                <p class="mb-4">Daha düzenli ve verimli bir yaşam için bugün To-Do List uygulamasına katılın.</p>
+                <a asp-controller="Account" asp-action="Register" class="btn btn-light btn-lg">
+                    <i class="bi bi-arrow-right-circle me-2 animated-icon"></i> Hemen Başla
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/custom.css" />
+}

@@ -1,0 +1,16 @@
+<svg width="800" height="800" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="triangles" x="0" y="0" width="50" height="50" patternUnits="userSpaceOnUse">
+      <path d="M0 0L25 43.3L50 0Z" fill="#FFFFFF" fill-opacity="0.05"/>
+    </pattern>
+    <pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="10" cy="10" r="2" fill="#FFFFFF" fill-opacity="0.1"/>
+    </pattern>
+    <pattern id="squares" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
+      <rect x="5" y="5" width="20" height="20" rx="3" fill="#FFFFFF" fill-opacity="0.05"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="800" fill="url(#triangles)"/>
+  <rect width="800" height="800" fill="url(#dots)"/>
+  <rect width="800" height="800" fill="url(#squares)"/>
+</svg> 
